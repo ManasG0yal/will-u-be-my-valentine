@@ -122,7 +122,7 @@ h2.section-title {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
     position: relative;
     margin-top: 20px;
     flex-wrap: wrap;
@@ -133,7 +133,7 @@ h2.section-title {
 }
 
 .btn {
-    width: min(120px, 35vw);
+    width: min(90px, 25vw);
     height: auto;
     cursor: pointer;
     user-select: none;
@@ -317,7 +317,7 @@ h2.section-title {
 }
 
 .btn-agree {
-    width: min(140px, 40vw);
+    width: min(110px, 30vw);
     cursor: pointer;
     filter: drop-shadow(0 6px 12px rgba(255, 20, 147, 0.6));
     animation: glow-pulse 2s ease-in-out infinite;
@@ -435,7 +435,7 @@ h2.section-title {
     }
     
     .btn {
-        width: min(100px, 40vw);
+        width: min(80px, 22vw);
     }
     
     #wheel {
@@ -468,7 +468,7 @@ h2.section-title {
     }
     
     .btn {
-        width: min(90px, 45vw);
+        width: min(70px, 20vw);
     }
     
     .letter-window {
