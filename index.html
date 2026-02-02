@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Datto 💕</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Envelope Screen -->
+    <div id="envelope-container">
+        <div class="envelope-wrapper">
+            <div class="envelope">
+                <div class="envelope-flap"></div>
+                <div class="envelope-body"></div>
+            </div>
+            <p class="envelope-text">💌 For Datto 💌</p>
+        </div>
+    </div>
+
+    <!-- Letter/Question Screen -->
+    <div id="letter-container">
+        <div class="letter-window">
+            <h1 id="letter-title">Will you be my Valentine? 💕</h1>
+            <div class="cat-container">
+                <img src="https://media.giphy.com/media/cfuL5gqFDreXxkWQ4o/giphy.gif" class="cat" id="letter-cat" alt="cute cat">
+            </div>
+            <div class="buttons" id="letter-buttons">
+                <button class="yes-btn" id="yes-btn">Yes! 💖</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Fate Wheel -->
+    <div id="wheel-section" class="section hidden">
+        <div class="section-container">
+            <h2>Let fate decide 💫</h2>
+            <div class="wheel-container">
+                <canvas id="wheel" width="350" height="350"></canvas>
+                <button id="spin-btn" class="spin-button">SPIN 🎡</button>
+            </div>
+            <p id="wheel-result" class="result-text"></p>
+        </div>
+    </div>
+
+    <!-- Section 2: Love Meter Slider -->
+    <div id="slider-section" class="section hidden">
+        <div class="section-container">
+            <h2>How much do you like me? 💗</h2>
+            <div class="slider-container">
+                <input type="range" id="love-slider" min="0" max="100" value="0" class="love-slider">
+                <div class="slider-fill" id="slider-fill"></div>
+                <div class="hearts-container" id="hearts-container"></div>
+            </div>
+            <p id="slider-value">0%</p>
+            <p id="slider-message" class="result-text"></p>
+        </div>
+    </div>
+
+    <!-- Section 3: Scroll to Agree -->
+    <div id="scroll-section" class="section hidden">
+        <div class="section-container scroll-container">
+            <h2>Scroll until your heart agrees 💕</h2>
+            <div class="scroll-messages" id="scroll-messages">
+                <div class="scroll-item">Maybe… 🤔</div>
+                <div class="scroll-item">Hmm… 😶</div>
+                <div class="scroll-item">Okay… 😌</div>
+                <div class="scroll-item">Fineeee 🥹</div>
+                <div class="scroll-item final-scroll">
+                    <button id="agree-btn" class="glow-btn">I'm in ❤️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Choice Cards -->
+    <div id="choice-section" class="section hidden">
+        <div class="section-container">
+            <h2>Pick our Valentine's date 💝</h2>
+            <div class="cards-wrapper">
+                <div class="cards-container" id="cards-container">
+                    <div class="date-card" data-choice="movie">
+                        <div class="card-emoji">🍿</div>
+                        <h3>Movie Night</h3>
+                        <p>Cozy cinema date</p>
+                    </div>
+                    <div class="date-card" data-choice="coffee">
+                        <div class="card-emoji">☕</div>
+                        <h3>Coffee & Long Talks</h3>
+                        <p>Deep conversations</p>
+                    </div>
+                    <div class="date-card" data-choice="walk">
+                        <div class="card-emoji">🌙</div>
+                        <h3>Late Night Walk</h3>
+                        <p>Under the stars</p>
+                    </div>
+                    <div class="date-card" data-choice="all">
+                        <div class="card-emoji">😍</div>
+                        <h3>All of the Above</h3>
+                        <p>Let's do everything!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final: Message Input -->
+    <div id="message-section" class="section hidden">
+        <div class="section-container">
+            <h2>One last thing... 💌</h2>
+            <p class="subtitle">Write me a message from your heart:</p>
+            <div class="message-container">
+                <textarea id="message-input" placeholder="Type your message here... 💕" rows="6"></textarea>
+                <button id="send-btn" class="send-button">Send to My Heart 💖</button>
+            </div>
+            <p id="send-status" class="result-text"></p>
+        </div>
+    </div>
+
+    <!-- Sad Animation Overlay -->
+    <div id="sad-overlay" class="sad-overlay hidden">
+        <div class="sad-content">
+            <img src="https://media.giphy.com/media/L95W4wv8nnb9K/giphy.gif" alt="sad puppy" class="sad-gif">
+            <p class="sad-text">Aww come on 🥺</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
