@@ -4,7 +4,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url("https://i.imgur.com/8GjQPqo.jpg");
+    background-image: url("heart-bg.jpg");
     background-size: cover;
     background-position: center;
     font-family: "Pixelify Sans", sans-serif;
@@ -73,7 +73,7 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-image: url("https://i.imgur.com/kXyF0zQ.png");
+    background-image: url("window.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -406,6 +406,16 @@ h2.section-title {
     color: #ff1493;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* ===== SUCCESS SCREEN ===== */
+#success-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
 /* ===== MOBILE RESPONSIVE ===== */

@@ -184,8 +184,15 @@ const sliderMessage = document.getElementById('slider-message');
 const heartsDisplay = document.getElementById('hearts');
 
 let sliderLocked = false;
+let lockedValue = 0;
 
 loveSlider.addEventListener('input', function() {
+    if (sliderLocked) {
+        // Keep showing the locked value, don't let it change
+        this.value = lockedValue;
+        return;
+    }
+
     const value = parseInt(this.value);
     sliderValue.textContent = value + '%';
 
@@ -193,18 +200,25 @@ loveSlider.addEventListener('input', function() {
     const heartCount = Math.floor(value / 10);
     heartsDisplay.textContent = '💕'.repeat(heartCount);
 
-    if (!sliderLocked && value < 70) {
+    if (value < 70) {
         // Shake and bounce back
         loveSlider.classList.add('shake');
         setTimeout(() => {
             loveSlider.classList.remove('shake');
-            loveSlider.value = 0;
-            sliderValue.textContent = '0%';
-            heartsDisplay.textContent = '';
+            if (!sliderLocked) {
+                loveSlider.value = 0;
+                sliderValue.textContent = '0%';
+                heartsDisplay.textContent = '';
+            }
         }, 300);
     } else if (value >= 70 && !sliderLocked) {
+        // Lock the slider at current value
         sliderLocked = true;
+        lockedValue = value;
         loveSlider.disabled = true;
+        
+        // Keep showing the actual percentage
+        sliderValue.textContent = value + '%';
         sliderMessage.textContent = "That's more than enough 😏";
         
         // Hearts explosion
@@ -312,17 +326,11 @@ sendBtn.addEventListener('click', async function() {
             messageInput.value = '';
             
             setTimeout(() => {
-                document.body.innerHTML = `
-                    <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); padding: 20px; text-align: center;">
-                        <h1 style="font-size: 48px; color: white; margin-bottom: 30px; font-family: 'Pixelify Sans', sans-serif; text-shadow: 3px 3px 6px rgba(0,0,0,0.2);">
-                            You're the best, Datto! 💕
-                        </h1>
-                        <img src="https://media.giphy.com/media/UuB5lh1bL1Dl6svihe/giphy.gif" style="width: 300px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
-                        <p style="font-size: 24px; color: white; font-family: 'Pixelify Sans', sans-serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
-                            Can't wait for our virtual date! 💖
-                        </p>
-                    </div>
-                `;
+                messageSection.classList.add('hidden');
+                document.getElementById('success-screen').classList.remove('hidden');
+                setTimeout(() => {
+                    document.querySelector('#success-screen .letter-window').classList.add('open');
+                }, 50);
             }, 2000);
         } else {
             throw new Error('Failed to send');

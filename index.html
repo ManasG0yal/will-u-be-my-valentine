@@ -12,7 +12,7 @@
 <body>
     <!-- Envelope Screen -->
     <div id="envelope-container">
-        <img src="https://i.imgur.com/6KmXJYE.png" alt="Envelope" id="envelope" />
+        <img src="envelope.png" alt="Envelope" id="envelope" />
         <p class="envelope-label">♡ Letter for Datto ♡</p>
     </div>
 
@@ -20,11 +20,11 @@
     <div id="letter-container" class="hidden">
         <div class="letter-window">
             <h1 id="letter-title">Will you be my Valentine?</h1>
-            <img src="https://media.giphy.com/media/cfuL5gqFDreXxkWQ4o/giphy.gif" class="cat" id="letter-cat" />
+            <img src="cat_heart.gif" class="cat" id="letter-cat" />
             <div class="buttons" id="letter-buttons">
-                <img src="https://i.imgur.com/9HvFKv4.png" class="btn yes-btn" alt="Yes" id="yes-btn" />
+                <img src="yes.png" class="btn yes-btn" alt="Yes" id="yes-btn" />
                 <div class="no-wrapper">
-                    <img src="https://i.imgur.com/3LWcUfj.png" class="btn no-btn" alt="No" id="no-btn" />
+                    <img src="no.png" class="btn no-btn" alt="No" id="no-btn" />
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                 <div class="scroll-msg">Okay… 😌</div>
                 <div class="scroll-msg">Fineeee 🥹</div>
                 <div class="scroll-msg-final">
-                    <img src="https://i.imgur.com/9HvFKv4.png" class="btn-agree" id="agree-btn" alt="I'm in" />
+                    <img src="yes.png" class="btn-agree" id="agree-btn" alt="I'm in" />
                 </div>
             </div>
         </div>
@@ -111,6 +111,20 @@
             <textarea id="message-input" placeholder="Type here... 💕" rows="5"></textarea>
             <button id="send-btn" class="pixel-btn">Send 💖</button>
             <p id="send-status" class="result-text"></p>
+        </div>
+    </div>
+
+    <!-- Success Screen (hidden initially) -->
+    <div id="success-screen" class="hidden">
+        <div class="letter-window">
+            <h1 style="font-size: 36px; margin-bottom: 20px;">Yippeeee! 🎉</h1>
+            <img src="cat_dance.gif" class="cat" style="width: 300px; height: 300px;" />
+            <p style="font-size: 24px; margin-top: 20px; color: #ff1493;">
+                You made me the happiest! 💕
+            </p>
+            <p style="font-size: 18px; color: #666; margin-top: 10px;">
+                Can't wait for our virtual date! 🌹
+            </p>
         </div>
     </div>
 
