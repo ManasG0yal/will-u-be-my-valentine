@@ -1,346 +1,204 @@
-// ===== ELEMENTS =====
-const envelopeContainer = document.getElementById('envelope-container');
-const letterContainer = document.getElementById('letter-container');
-const letterWindow = document.querySelector('.letter-window');
-const yesBtn = document.getElementById('yes-btn');
-const noBtn = document.getElementById('no-btn');
-const wheelSection = document.getElementById('wheel-section');
-const sliderSection = document.getElementById('slider-section');
-const scrollSection = document.getElementById('scroll-section');
-const choiceSection = document.getElementById('choice-section');
-const messageSection = document.getElementById('message-section');
+// Elements
+const envelope = document.getElementById("envelope-container");
+const letter = document.getElementById("letter-container");
+const wheelSection = document.getElementById("wheel-section");
+const sliderSection = document.getElementById("slider-section");
+const scrollSection = document.getElementById("scroll-section");
+const choiceSection = document.getElementById("choice-section");
+const messageSection = document.getElementById("message-section");
+const finalScreen = document.getElementById("final-screen");
 
-// ===== ENVELOPE CLICK =====
-envelopeContainer.addEventListener('click', () => {
-    envelopeContainer.style.display = 'none';
-    letterContainer.classList.remove('hidden');
+const noBtn = document.querySelector(".no-btn");
+const yesBtn = document.getElementById("yes-btn");
+
+// Envelope click
+envelope.addEventListener("click", () => {
+    envelope.style.display = "none";
+    letter.style.display = "flex";
     setTimeout(() => {
-        letterWindow.classList.add('open');
+        document.querySelector(".letter-window").classList.add("open");
     }, 50);
 });
 
-// ===== NO BUTTON - MOVES AWAY =====
-let yesScale = 1;
-
-function moveNoButton() {
-    const min = 100;
-    const max = 200;
-    const distance = Math.random() * (max - min) + min;
+// NO button moves
+noBtn.addEventListener("mouseover", () => {
+    const distance = 200;
     const angle = Math.random() * Math.PI * 2;
     const moveX = Math.cos(angle) * distance;
     const moveY = Math.sin(angle) * distance;
-    
-    noBtn.style.transition = 'transform 0.3s ease';
     noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
-    
-    // Make YES button bigger each time
-    yesScale += 0.15;
-    yesBtn.style.transform = `scale(${yesScale})`;
-}
-
-noBtn.addEventListener('mouseover', moveNoButton);
-noBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    moveNoButton();
 });
 
-// Touch support for mobile
-noBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    moveNoButton();
-});
-
-// ===== YES BUTTON =====
-yesBtn.addEventListener('click', () => {
-    letterContainer.classList.add('hidden');
-    wheelSection.classList.remove('hidden');
+// YES button
+yesBtn.addEventListener("click", () => {
+    letter.style.display = "none";
+    wheelSection.style.display = "flex";
     setTimeout(() => {
-        document.querySelector('#wheel-section .letter-window').classList.add('open');
+        wheelSection.querySelector(".letter-window").classList.add("open");
     }, 50);
 });
 
-// ===== SECTION 1: FATE WHEEL =====
-const canvas = document.getElementById('wheel');
-const ctx = canvas.getContext('2d');
-const spinBtn = document.getElementById('spin-btn');
-const wheelResult = document.getElementById('wheel-result');
+// ===== WHEEL =====
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const spinBtn = document.getElementById("spin-btn");
+const wheelResult = document.getElementById("wheel-result");
 
-// Make canvas responsive
-function resizeCanvas() {
-    const size = Math.min(320, window.innerWidth * 0.85, window.innerHeight * 0.4);
-    canvas.width = size;
-    canvas.height = size;
-    drawWheel();
-}
+const options = ["Definitely 💖", "Obviously 😌", "100% Yes 😍", "Of Course! 💕"];
+const colors = ["#ff6b9d", "#feca57", "#48dbfb", "#ff9ff3"];
 
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-const options = [
-    "Definitely 💖",
-    "Obviously 😌",
-    "100% Yes 😍",
-    "Of Course! 💕"
-];
-
-const colors = ['#ff6b9d', '#feca57', '#48dbfb', '#ff9ff3'];
-
-let currentRotation = 0;
-let isSpinning = false;
+let currentAngle = 0;
 
 function drawWheel() {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = (canvas.width / 2) - 10;
-    const sliceAngle = (2 * Math.PI) / options.length;
+    const centerX = 150;
+    const centerY = 150;
+    const radius = 140;
+    const sliceAngle = (2 * Math.PI) / 4;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, 300, 300);
 
-    options.forEach((option, i) => {
-        // Draw slice
+    for (let i = 0; i < 4; i++) {
         ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, i * sliceAngle + currentRotation, (i + 1) * sliceAngle + currentRotation);
+        ctx.arc(centerX, centerY, radius, i * sliceAngle + currentAngle, (i + 1) * sliceAngle + currentAngle);
         ctx.lineTo(centerX, centerY);
-        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillStyle = colors[i];
         ctx.fill();
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = "#fff";
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        // Draw text
         ctx.save();
         ctx.translate(centerX, centerY);
-        ctx.rotate(i * sliceAngle + sliceAngle / 2 + currentRotation);
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#fff';
-        const fontSize = Math.max(14, canvas.width / 20);
-        ctx.font = `bold ${fontSize}px Pixelify Sans`;
-        ctx.shadowColor = 'rgba(0,0,0,0.3)';
-        ctx.shadowBlur = 4;
-        ctx.fillText(option, radius / 1.6, 8);
+        ctx.rotate(i * sliceAngle + sliceAngle / 2 + currentAngle);
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 16px Pixelify Sans";
+        ctx.fillText(options[i], radius / 1.5, 5);
         ctx.restore();
-    });
+    }
 
     // Center circle
     ctx.beginPath();
     ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = "#fff";
     ctx.fill();
-    ctx.strokeStyle = '#ff1493';
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#ff1493";
+    ctx.lineWidth = 3;
     ctx.stroke();
 }
 
-function spinWheel() {
-    if (isSpinning) return;
-    
-    isSpinning = true;
-    spinBtn.disabled = true;
-    wheelResult.textContent = '';
+drawWheel();
 
-    const extraSpins = 5 + Math.random() * 3;
-    const randomStop = Math.random() * (2 * Math.PI);
-    const targetRotation = currentRotation + (extraSpins * 2 * Math.PI) + randomStop;
-    const duration = 4000;
+spinBtn.addEventListener("click", () => {
+    spinBtn.disabled = true;
+    const spinAmount = 5 * 2 * Math.PI + Math.random() * 2 * Math.PI;
+    const duration = 3000;
+    const startAngle = currentAngle;
     const startTime = Date.now();
-    const startRotation = currentRotation;
 
     function animate() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
         const easeOut = 1 - Math.pow(1 - progress, 3);
-        currentRotation = startRotation + (targetRotation - startRotation) * easeOut;
-
+        
+        currentAngle = startAngle + spinAmount * easeOut;
         drawWheel();
 
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
-            const normalizedRotation = (2 * Math.PI - (currentRotation % (2 * Math.PI))) % (2 * Math.PI);
-            const sliceAngle = (2 * Math.PI) / options.length;
-            const selectedIndex = Math.floor(normalizedRotation / sliceAngle) % options.length;
-            
-            wheelResult.textContent = `✨ ${options[selectedIndex]} ✨`;
-            
+            wheelResult.textContent = "✨ Fate says YES! ✨";
             setTimeout(() => {
-                wheelSection.classList.add('hidden');
-                sliderSection.classList.remove('hidden');
+                wheelSection.style.display = "none";
+                sliderSection.style.display = "flex";
                 setTimeout(() => {
-                    document.querySelector('#slider-section .letter-window').classList.add('open');
+                    sliderSection.querySelector(".letter-window").classList.add("open");
                 }, 50);
-            }, 2500);
-            
-            isSpinning = false;
-            spinBtn.disabled = false;
+            }, 2000);
         }
     }
-
     animate();
-}
+});
 
-spinBtn.addEventListener('click', spinWheel);
-drawWheel();
+// ===== SLIDER =====
+const loveSlider = document.getElementById("love-slider");
+const sliderValue = document.getElementById("slider-value");
+const sliderMessage = document.getElementById("slider-message");
 
-// ===== SECTION 2: LOVE METER SLIDER (SIMPLIFIED) =====
-const loveSlider = document.getElementById('love-slider');
-const sliderValue = document.getElementById('slider-value');
-const sliderMessage = document.getElementById('slider-message');
-const heartsDisplay = document.getElementById('hearts');
-
-let sliderLocked = false;
-let finalValue = 0;
-
-loveSlider.addEventListener('input', function() {
-    if (sliderLocked) {
-        return;
-    }
-
+loveSlider.addEventListener("input", function() {
     const value = parseInt(this.value);
-    
-    // Always show the current value
-    sliderValue.textContent = value + '%';
+    sliderValue.textContent = value + "%";
 
-    // Update hearts
-    const heartCount = Math.floor(value / 10);
-    heartsDisplay.textContent = '💕'.repeat(heartCount);
-
-    if (value < 70) {
-        // Shake and reset
-        this.classList.add('shake');
+    if (value >= 70) {
+        sliderMessage.textContent = "That's perfect! 😏";
         setTimeout(() => {
-            this.classList.remove('shake');
-            if (!sliderLocked) {
-                this.value = 0;
-                sliderValue.textContent = '0%';
-                heartsDisplay.textContent = '';
-            }
-        }, 300);
-    } else if (value >= 70) {
-        // Lock it!
-        sliderLocked = true;
-        finalValue = value;
-        this.disabled = true;
-        
-        // Keep showing the final value
-        sliderValue.textContent = finalValue + '%';
-        sliderMessage.textContent = "That's more than enough 😏";
-        heartsDisplay.textContent = '💖💕💗💓💝💘💞💟';
-        
-        setTimeout(() => {
-            sliderSection.classList.add('hidden');
-            scrollSection.classList.remove('hidden');
+            sliderSection.style.display = "none";
+            scrollSection.style.display = "flex";
             setTimeout(() => {
-                document.querySelector('#scroll-section .letter-window').classList.add('open');
+                scrollSection.querySelector(".letter-window").classList.add("open");
             }, 50);
-        }, 2500);
+        }, 1500);
     }
 });
 
-// ===== SECTION 3: SCROLL TO AGREE =====
-const scrollContent = document.getElementById('scroll-content');
-const scrollMessages = document.querySelectorAll('.scroll-msg');
-const scrollFinal = document.querySelector('.scroll-msg-final');
-const agreeBtn = document.getElementById('agree-btn');
+// ===== SCROLL =====
+const scrollContent = document.querySelector(".scroll-content");
+const scrollMsgs = document.querySelectorAll(".scroll-msg");
+const agreeBtn = document.getElementById("agree-btn");
 
-function handleScroll() {
-    const scrollTop = scrollContent.scrollTop;
-    const scrollHeight = scrollContent.scrollHeight - scrollContent.clientHeight;
-    const scrollPercent = (scrollTop / scrollHeight) * 100;
-
-    scrollMessages.forEach((msg, index) => {
-        const threshold = (index / (scrollMessages.length - 1)) * 70;
-        if (scrollPercent >= threshold) {
-            msg.classList.add('visible');
+scrollContent.addEventListener("scroll", function() {
+    const scrollPercent = (this.scrollTop / (this.scrollHeight - this.clientHeight)) * 100;
+    
+    scrollMsgs.forEach((msg, i) => {
+        if (scrollPercent > i * 25) {
+            msg.classList.add("visible");
         }
     });
 
     if (scrollPercent > 80) {
-        scrollFinal.classList.add('show');
+        agreeBtn.style.display = "block";
     }
-}
+});
 
-scrollContent.addEventListener('scroll', handleScroll);
-
-agreeBtn.addEventListener('click', () => {
-    scrollSection.classList.add('hidden');
-    choiceSection.classList.remove('hidden');
+agreeBtn.addEventListener("click", () => {
+    scrollSection.style.display = "none";
+    choiceSection.style.display = "flex";
     setTimeout(() => {
-        document.querySelector('#choice-section .letter-window').classList.add('open');
+        choiceSection.querySelector(".letter-window").classList.add("open");
     }, 50);
 });
 
-// ===== SECTION 4: CHOICE CARDS =====
-const dateChoices = document.querySelectorAll('.date-choice');
+// ===== CHOICES =====
+const choices = document.querySelectorAll(".choice");
 
-dateChoices.forEach(choice => {
-    choice.addEventListener('click', function() {
-        this.style.transform = 'scale(1.15)';
-        
+choices.forEach(choice => {
+    choice.addEventListener("click", () => {
+        choiceSection.style.display = "none";
+        messageSection.style.display = "flex";
         setTimeout(() => {
-            choiceSection.classList.add('hidden');
-            messageSection.classList.remove('hidden');
-            setTimeout(() => {
-                document.querySelector('#message-section .letter-window').classList.add('open');
-            }, 50);
-        }, 500);
+            messageSection.querySelector(".letter-window").classList.add("open");
+        }, 50);
     });
 });
 
-// ===== FINAL: MESSAGE & EMAIL =====
-const messageInput = document.getElementById('message-input');
-const sendBtn = document.getElementById('send-btn');
-const sendStatus = document.getElementById('send-status');
+// ===== MESSAGE =====
+const messageInput = document.getElementById("message-input");
+const sendBtn = document.getElementById("send-btn");
+const sendStatus = document.getElementById("send-status");
 
-sendBtn.addEventListener('click', async function() {
+sendBtn.addEventListener("click", () => {
     const message = messageInput.value.trim();
-    
     if (!message) {
-        sendStatus.textContent = 'Please write something! 💕';
-        sendStatus.style.color = '#ff6b9d';
+        sendStatus.textContent = "Please write something! 💕";
         return;
     }
 
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'Sending... 💌';
-
-    try {
-        const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                service_id: 'YOUR_SERVICE_ID',
-                template_id: 'YOUR_TEMPLATE_ID',
-                user_id: 'YOUR_PUBLIC_KEY',
-                template_params: {
-                    from_name: 'Datto',
-                    message: message,
-                    to_email: 'YOUR_EMAIL@example.com'
-                }
-            })
-        });
-
-        if (response.ok) {
-            sendStatus.textContent = '💖 Message sent! 💖';
-            sendStatus.style.color = '#00b894';
-            messageInput.value = '';
-            
-            setTimeout(() => {
-                messageSection.classList.add('hidden');
-                document.getElementById('success-screen').classList.remove('hidden');
-                setTimeout(() => {
-                    document.querySelector('#success-screen .letter-window').classList.add('open');
-                }, 50);
-            }, 2000);
-        } else {
-            throw new Error('Failed to send');
-        }
-    } catch (error) {
-        sendStatus.textContent = '❌ Try again?';
-        sendStatus.style.color = '#d63031';
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send 💖';
-    }
+    sendStatus.textContent = "💖 Message received! 💖";
+    setTimeout(() => {
+        messageSection.style.display = "none";
+        finalScreen.style.display = "flex";
+        setTimeout(() => {
+            finalScreen.querySelector(".letter-window").classList.add("open");
+        }, 50);
+    }, 1500);
 });
