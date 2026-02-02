@@ -213,7 +213,7 @@ const messageInput = document.getElementById("message-input");
 const sendBtn = document.getElementById("send-btn");
 const sendStatus = document.getElementById("send-status");
 
-sendBtn.addEventListener("click", () => {
+sendBtn.addEventListener("click", async () => {
     const message = messageInput.value.trim();
     if (!message) {
         sendStatus.textContent = "Please write something! 💕";
@@ -223,14 +223,57 @@ sendBtn.addEventListener("click", () => {
 
     sendBtn.disabled = true;
     sendBtn.textContent = "Sending...";
-    sendStatus.textContent = "💖 Message received! 💖";
-    sendStatus.style.color = "#00b894";
-    
-    setTimeout(() => {
-        messageSection.style.display = "none";
-        finalScreen.style.display = "flex";
+    sendStatus.textContent = "Sending to your email...";
+    sendStatus.style.color = "#667eea";
+
+    try {
+        // Send email via EmailJS
+        const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                service_id: 'service_jdjgguj',
+                template_id: 'template_0rrd2yd',
+                user_id: '4m9BNZhHfymQidl8U',
+                template_params: {
+                    from_name: 'Datto',
+                    message: message,
+                    to_email: 'manas.goyal0720@gmail.com'
+                }
+            })
+        });
+
+        if (response.ok) {
+            sendStatus.textContent = "💖 Message sent to your email! 💖";
+            sendStatus.style.color = "#00b894";
+            messageInput.value = "";
+            
+            setTimeout(() => {
+                messageSection.style.display = "none";
+                finalScreen.style.display = "flex";
+                setTimeout(() => {
+                    finalScreen.querySelector(".letter-window").classList.add("open");
+                }, 50);
+            }, 2000);
+        } else {
+            throw new Error('Failed to send');
+        }
+    } catch (error) {
+        console.error('Email error:', error);
+        sendStatus.textContent = "❌ Couldn't send email. But message saved! ❌";
+        sendStatus.style.color = "#d63031";
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Try Again";
+        
+        // Still proceed to final screen after 3 seconds
         setTimeout(() => {
-            finalScreen.querySelector(".letter-window").classList.add("open");
-        }, 50);
-    }, 1500);
+            messageSection.style.display = "none";
+            finalScreen.style.display = "flex";
+            setTimeout(() => {
+                finalScreen.querySelector(".letter-window").classList.add("open");
+            }, 50);
+        }, 3000);
+    }
 });
