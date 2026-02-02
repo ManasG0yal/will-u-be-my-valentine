@@ -20,13 +20,23 @@ envelope.addEventListener("click", () => {
     }, 50);
 });
 
-// NO button moves
-noBtn.addEventListener("mouseover", () => {
+// NO button moves (BOTH mouse AND touch)
+function moveNoButton() {
     const distance = 200;
     const angle = Math.random() * Math.PI * 2;
     const moveX = Math.cos(angle) * distance;
     const moveY = Math.sin(angle) * distance;
     noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+}
+
+noBtn.addEventListener("mouseover", moveNoButton);
+noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    moveNoButton();
+});
+noBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    moveNoButton();
 });
 
 // YES button
@@ -52,11 +62,12 @@ let currentAngle = 0;
 function drawWheel() {
     const centerX = 150;
     const centerY = 150;
-    const radius = 140;
+    const radius = 135;
     const sliceAngle = (2 * Math.PI) / 4;
 
     ctx.clearRect(0, 0, 300, 300);
 
+    // Draw slices
     for (let i = 0; i < 4; i++) {
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, i * sliceAngle + currentAngle, (i + 1) * sliceAngle + currentAngle);
@@ -64,26 +75,29 @@ function drawWheel() {
         ctx.fillStyle = colors[i];
         ctx.fill();
         ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.stroke();
 
+        // Draw text
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(i * sliceAngle + sliceAngle / 2 + currentAngle);
         ctx.textAlign = "center";
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 16px Pixelify Sans";
-        ctx.fillText(options[i], radius / 1.5, 5);
+        ctx.font = "bold 18px Pixelify Sans";
+        ctx.shadowColor = "rgba(0,0,0,0.3)";
+        ctx.shadowBlur = 3;
+        ctx.fillText(options[i], radius / 1.6, 8);
         ctx.restore();
     }
 
     // Center circle
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
+    ctx.arc(centerX, centerY, 22, 0, 2 * Math.PI);
     ctx.fillStyle = "#fff";
     ctx.fill();
     ctx.strokeStyle = "#ff1493";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.stroke();
 }
 
@@ -91,8 +105,10 @@ drawWheel();
 
 spinBtn.addEventListener("click", () => {
     spinBtn.disabled = true;
+    wheelResult.textContent = "";
+    
     const spinAmount = 5 * 2 * Math.PI + Math.random() * 2 * Math.PI;
-    const duration = 3000;
+    const duration = 3500;
     const startAngle = currentAngle;
     const startTime = Date.now();
 
@@ -114,30 +130,41 @@ spinBtn.addEventListener("click", () => {
                 setTimeout(() => {
                     sliderSection.querySelector(".letter-window").classList.add("open");
                 }, 50);
+                spinBtn.disabled = false;
             }, 2000);
         }
     }
     animate();
 });
 
-// ===== SLIDER =====
+// ===== SLIDER (FIXED - LOCKS PROPERLY) =====
 const loveSlider = document.getElementById("love-slider");
 const sliderValue = document.getElementById("slider-value");
 const sliderMessage = document.getElementById("slider-message");
 
+let sliderLocked = false;
+
 loveSlider.addEventListener("input", function() {
+    if (sliderLocked) {
+        return; // Don't allow changes after locked
+    }
+
     const value = parseInt(this.value);
     sliderValue.textContent = value + "%";
 
     if (value >= 70) {
+        // LOCK IT!
+        sliderLocked = true;
+        this.disabled = true;
         sliderMessage.textContent = "That's perfect! 😏";
+        
         setTimeout(() => {
             sliderSection.style.display = "none";
             scrollSection.style.display = "flex";
             setTimeout(() => {
                 scrollSection.querySelector(".letter-window").classList.add("open");
             }, 50);
-        }, 1500);
+        }, 2000);
     }
 });
 
@@ -150,12 +177,12 @@ scrollContent.addEventListener("scroll", function() {
     const scrollPercent = (this.scrollTop / (this.scrollHeight - this.clientHeight)) * 100;
     
     scrollMsgs.forEach((msg, i) => {
-        if (scrollPercent > i * 25) {
+        if (scrollPercent > i * 20) {
             msg.classList.add("visible");
         }
     });
 
-    if (scrollPercent > 80) {
+    if (scrollPercent > 75) {
         agreeBtn.style.display = "block";
     }
 });
@@ -190,10 +217,15 @@ sendBtn.addEventListener("click", () => {
     const message = messageInput.value.trim();
     if (!message) {
         sendStatus.textContent = "Please write something! 💕";
+        sendStatus.style.color = "#ff6b9d";
         return;
     }
 
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Sending...";
     sendStatus.textContent = "💖 Message received! 💖";
+    sendStatus.style.color = "#00b894";
+    
     setTimeout(() => {
         messageSection.style.display = "none";
         finalScreen.style.display = "flex";
