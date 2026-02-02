@@ -12,119 +12,105 @@
 <body>
     <!-- Envelope Screen -->
     <div id="envelope-container">
-        <div class="envelope-wrapper">
-            <div class="envelope">
-                <div class="envelope-flap"></div>
-                <div class="envelope-body"></div>
-            </div>
-            <p class="envelope-text">💌 For Datto 💌</p>
-        </div>
+        <img src="https://i.imgur.com/6KmXJYE.png" alt="Envelope" id="envelope" />
+        <p class="envelope-label">♡ Letter for Datto ♡</p>
     </div>
 
-    <!-- Letter/Question Screen -->
-    <div id="letter-container">
+    <!-- Initial Question Screen -->
+    <div id="letter-container" class="hidden">
         <div class="letter-window">
-            <h1 id="letter-title">Will you be my Valentine? 💕</h1>
-            <div class="cat-container">
-                <img src="https://media.giphy.com/media/cfuL5gqFDreXxkWQ4o/giphy.gif" class="cat" id="letter-cat" alt="cute cat">
-            </div>
+            <h1 id="letter-title">Will you be my Valentine?</h1>
+            <img src="https://media.giphy.com/media/cfuL5gqFDreXxkWQ4o/giphy.gif" class="cat" id="letter-cat" />
             <div class="buttons" id="letter-buttons">
-                <button class="yes-btn" id="yes-btn">Yes! 💖</button>
+                <img src="https://i.imgur.com/9HvFKv4.png" class="btn yes-btn" alt="Yes" id="yes-btn" />
+                <div class="no-wrapper">
+                    <img src="https://i.imgur.com/3LWcUfj.png" class="btn no-btn" alt="No" id="no-btn" />
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Section 1: Fate Wheel -->
     <div id="wheel-section" class="section hidden">
-        <div class="section-container">
-            <h2>Let fate decide 💫</h2>
+        <div class="letter-window">
+            <h2 class="section-title">Let fate decide 💫</h2>
             <div class="wheel-container">
-                <canvas id="wheel" width="350" height="350"></canvas>
-                <button id="spin-btn" class="spin-button">SPIN 🎡</button>
+                <canvas id="wheel" width="320" height="320"></canvas>
+                <div class="wheel-pointer"></div>
             </div>
+            <button id="spin-btn" class="pixel-btn">SPIN</button>
             <p id="wheel-result" class="result-text"></p>
         </div>
     </div>
 
     <!-- Section 2: Love Meter Slider -->
     <div id="slider-section" class="section hidden">
-        <div class="section-container">
-            <h2>How much do you like me? 💗</h2>
-            <div class="slider-container">
-                <input type="range" id="love-slider" min="0" max="100" value="0" class="love-slider">
-                <div class="slider-fill" id="slider-fill"></div>
-                <div class="hearts-container" id="hearts-container"></div>
+        <div class="letter-window">
+            <h2 class="section-title">How much do you like me?</h2>
+            <div class="slider-wrapper">
+                <input type="range" id="love-slider" min="0" max="100" value="0" />
+                <div class="slider-display">
+                    <span id="slider-value">0%</span>
+                    <div class="hearts" id="hearts"></div>
+                </div>
             </div>
-            <p id="slider-value">0%</p>
             <p id="slider-message" class="result-text"></p>
         </div>
     </div>
 
     <!-- Section 3: Scroll to Agree -->
     <div id="scroll-section" class="section hidden">
-        <div class="section-container scroll-container">
-            <h2>Scroll until your heart agrees 💕</h2>
-            <div class="scroll-messages" id="scroll-messages">
-                <div class="scroll-item">Maybe… 🤔</div>
-                <div class="scroll-item">Hmm… 😶</div>
-                <div class="scroll-item">Okay… 😌</div>
-                <div class="scroll-item">Fineeee 🥹</div>
-                <div class="scroll-item final-scroll">
-                    <button id="agree-btn" class="glow-btn">I'm in ❤️</button>
+        <div class="letter-window scroll-window">
+            <h2 class="section-title">Scroll until your heart agrees 💕</h2>
+            <div class="scroll-content" id="scroll-content">
+                <div class="scroll-msg">Maybe… 🤔</div>
+                <div class="scroll-msg">Hmm… 😶</div>
+                <div class="scroll-msg">Okay… 😌</div>
+                <div class="scroll-msg">Fineeee 🥹</div>
+                <div class="scroll-msg-final">
+                    <img src="https://i.imgur.com/9HvFKv4.png" class="btn-agree" id="agree-btn" alt="I'm in" />
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Section 4: Choice Cards -->
+    <!-- Section 4: LDR Date Choices -->
     <div id="choice-section" class="section hidden">
-        <div class="section-container">
-            <h2>Pick our Valentine's date 💝</h2>
-            <div class="cards-wrapper">
-                <div class="cards-container" id="cards-container">
-                    <div class="date-card" data-choice="movie">
-                        <div class="card-emoji">🍿</div>
-                        <h3>Movie Night</h3>
-                        <p>Cozy cinema date</p>
-                    </div>
-                    <div class="date-card" data-choice="coffee">
-                        <div class="card-emoji">☕</div>
-                        <h3>Coffee & Long Talks</h3>
-                        <p>Deep conversations</p>
-                    </div>
-                    <div class="date-card" data-choice="walk">
-                        <div class="card-emoji">🌙</div>
-                        <h3>Late Night Walk</h3>
-                        <p>Under the stars</p>
-                    </div>
-                    <div class="date-card" data-choice="all">
-                        <div class="card-emoji">😍</div>
-                        <h3>All of the Above</h3>
-                        <p>Let's do everything!</p>
-                    </div>
+        <div class="letter-window">
+            <h2 class="section-title">Pick our virtual date 💝</h2>
+            <div class="choices-scroll">
+                <div class="date-choice" data-choice="movie">
+                    <div class="choice-icon">🎬</div>
+                    <p class="choice-label">Watch Party</p>
+                    <p class="choice-desc">Movie together online</p>
+                </div>
+                <div class="date-choice" data-choice="call">
+                    <div class="choice-icon">📞</div>
+                    <p class="choice-label">Late Night Call</p>
+                    <p class="choice-desc">Talk till we fall asleep</p>
+                </div>
+                <div class="date-choice" data-choice="game">
+                    <div class="choice-icon">🎮</div>
+                    <p class="choice-label">Gaming Together</p>
+                    <p class="choice-desc">Play something fun</p>
+                </div>
+                <div class="date-choice" data-choice="all">
+                    <div class="choice-icon">😍</div>
+                    <p class="choice-label">All of the Above</p>
+                    <p class="choice-desc">Let's do everything!</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Final: Message Input -->
+    <!-- Final: Message Section -->
     <div id="message-section" class="section hidden">
-        <div class="section-container">
-            <h2>One last thing... 💌</h2>
-            <p class="subtitle">Write me a message from your heart:</p>
-            <div class="message-container">
-                <textarea id="message-input" placeholder="Type your message here... 💕" rows="6"></textarea>
-                <button id="send-btn" class="send-button">Send to My Heart 💖</button>
-            </div>
+        <div class="letter-window">
+            <h2 class="section-title">One last thing... 💌</h2>
+            <p class="message-prompt">Write me a message:</p>
+            <textarea id="message-input" placeholder="Type here... 💕" rows="5"></textarea>
+            <button id="send-btn" class="pixel-btn">Send 💖</button>
             <p id="send-status" class="result-text"></p>
-        </div>
-    </div>
-
-    <!-- Sad Animation Overlay -->
-    <div id="sad-overlay" class="sad-overlay hidden">
-        <div class="sad-content">
-            <img src="https://media.giphy.com/media/L95W4wv8nnb9K/giphy.gif" alt="sad puppy" class="sad-gif">
-            <p class="sad-text">Aww come on 🥺</p>
         </div>
     </div>
 

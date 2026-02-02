@@ -1,28 +1,69 @@
 // ===== ELEMENTS =====
 const envelopeContainer = document.getElementById('envelope-container');
 const letterContainer = document.getElementById('letter-container');
+const letterWindow = document.querySelector('.letter-window');
 const yesBtn = document.getElementById('yes-btn');
+const noBtn = document.getElementById('no-btn');
 const wheelSection = document.getElementById('wheel-section');
 const sliderSection = document.getElementById('slider-section');
 const scrollSection = document.getElementById('scroll-section');
 const choiceSection = document.getElementById('choice-section');
 const messageSection = document.getElementById('message-section');
-const sadOverlay = document.getElementById('sad-overlay');
 
 // ===== ENVELOPE CLICK =====
 envelopeContainer.addEventListener('click', () => {
     envelopeContainer.style.display = 'none';
     letterContainer.classList.remove('hidden');
+    setTimeout(() => {
+        letterWindow.classList.add('open');
+    }, 50);
+});
+
+// ===== NO BUTTON - MOVES AWAY =====
+let yesScale = 1;
+
+noBtn.addEventListener('mouseover', () => {
+    const min = 150;
+    const max = 250;
+    const distance = Math.random() * (max - min) + min;
+    const angle = Math.random() * Math.PI * 2;
+    const moveX = Math.cos(angle) * distance;
+    const moveY = Math.sin(angle) * distance;
+    
+    noBtn.style.transition = 'transform 0.3s ease';
+    noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    
+    // Make YES button bigger each time
+    yesScale += 0.15;
+    yesBtn.style.transform = `scale(${yesScale})`;
+});
+
+// Mobile: NO button click also moves it
+noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const min = 150;
+    const max = 250;
+    const distance = Math.random() * (max - min) + min;
+    const angle = Math.random() * Math.PI * 2;
+    const moveX = Math.cos(angle) * distance;
+    const moveY = Math.sin(angle) * distance;
+    
+    noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    
+    yesScale += 0.2;
+    yesBtn.style.transform = `scale(${yesScale})`;
 });
 
 // ===== YES BUTTON =====
 yesBtn.addEventListener('click', () => {
-    letterContainer.style.display = 'none';
+    letterContainer.classList.add('hidden');
     wheelSection.classList.remove('hidden');
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+        document.querySelector('#wheel-section .letter-window').classList.add('open');
+    }, 50);
 });
 
-// ===== SECTION 1: FATE WHEEL =====
+// ===== SECTION 1: FATE WHEEL (IMPROVED) =====
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 const spinBtn = document.getElementById('spin-btn');
@@ -32,7 +73,7 @@ const options = [
     "Definitely 💖",
     "Obviously 😌",
     "100% Yes 😍",
-    "Spin Again 😉"
+    "Of Course! 💕"
 ];
 
 const colors = ['#ff6b9d', '#feca57', '#48dbfb', '#ff9ff3'];
@@ -43,8 +84,10 @@ let isSpinning = false;
 function drawWheel() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = 150;
+    const radius = 140;
     const sliceAngle = (2 * Math.PI) / options.length;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     options.forEach((option, i) => {
         // Draw slice
@@ -54,7 +97,7 @@ function drawWheel() {
         ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.stroke();
 
         // Draw text
@@ -63,28 +106,21 @@ function drawWheel() {
         ctx.rotate(i * sliceAngle + sliceAngle / 2 + currentRotation);
         ctx.textAlign = 'center';
         ctx.fillStyle = '#fff';
-        ctx.font = 'bold 16px Pixelify Sans';
-        ctx.fillText(option, radius / 1.5, 10);
+        ctx.font = 'bold 18px Pixelify Sans';
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(option, radius / 1.6, 8);
         ctx.restore();
     });
 
     // Center circle
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
+    ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
     ctx.fillStyle = '#fff';
     ctx.fill();
     ctx.strokeStyle = '#ff1493';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.stroke();
-
-    // Pointer
-    ctx.beginPath();
-    ctx.moveTo(centerX + radius + 10, centerY);
-    ctx.lineTo(centerX + radius - 20, centerY - 15);
-    ctx.lineTo(centerX + radius - 20, centerY + 15);
-    ctx.closePath();
-    ctx.fillStyle = '#ff1493';
-    ctx.fill();
 }
 
 function spinWheel() {
@@ -94,38 +130,44 @@ function spinWheel() {
     spinBtn.disabled = true;
     wheelResult.textContent = '';
 
-    const spins = 5 + Math.random() * 3;
-    const finalRotation = currentRotation + spins * 2 * Math.PI;
-    const duration = 3000;
+    const extraSpins = 5 + Math.random() * 3; // 5-8 full rotations
+    const randomStop = Math.random() * (2 * Math.PI); // Random position
+    const targetRotation = currentRotation + (extraSpins * 2 * Math.PI) + randomStop;
+    const duration = 4000; // 4 seconds
     const startTime = Date.now();
+    const startRotation = currentRotation;
 
     function animate() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Easing function
+        // Improved easing (ease-out-cubic for smoother deceleration)
         const easeOut = 1 - Math.pow(1 - progress, 3);
-        currentRotation = currentRotation + (finalRotation - currentRotation) * easeOut / 10;
+        currentRotation = startRotation + (targetRotation - startRotation) * easeOut;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawWheel();
 
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
             // Calculate result
-            const normalizedRotation = currentRotation % (2 * Math.PI);
+            const normalizedRotation = (2 * Math.PI - (currentRotation % (2 * Math.PI))) % (2 * Math.PI);
             const sliceAngle = (2 * Math.PI) / options.length;
-            const selectedIndex = Math.floor((2 * Math.PI - normalizedRotation) / sliceAngle) % options.length;
+            const selectedIndex = Math.floor(normalizedRotation / sliceAngle) % options.length;
             
-            wheelResult.textContent = `✨ ${options[selectedIndex]} ✨`;
-            wheelResult.style.animation = 'glow 1s ease-in-out';
+            wheelResult.textContent = `✨ Looks like fate has spoken: ${options[selectedIndex]} ✨`;
+            wheelResult.style.fontSize = '20px';
             
             setTimeout(() => {
-                wheelSection.style.display = 'none';
+                wheelSection.classList.add('hidden');
                 sliderSection.classList.remove('hidden');
-                window.scrollTo(0, 0);
-            }, 2000);
+                setTimeout(() => {
+                    document.querySelector('#slider-section .letter-window').classList.add('open');
+                }, 50);
+            }, 2500);
+            
+            isSpinning = false;
+            spinBtn.disabled = false;
         }
     }
 
@@ -135,112 +177,101 @@ function spinWheel() {
 spinBtn.addEventListener('click', spinWheel);
 drawWheel();
 
-// ===== SECTION 2: LOVE METER SLIDER =====
+// ===== SECTION 2: LOVE METER SLIDER (FIXED) =====
 const loveSlider = document.getElementById('love-slider');
 const sliderValue = document.getElementById('slider-value');
 const sliderMessage = document.getElementById('slider-message');
-const heartsContainer = document.getElementById('hearts-container');
+const heartsDisplay = document.getElementById('hearts');
 
 let sliderLocked = false;
 
 loveSlider.addEventListener('input', function() {
-    const value = this.value;
+    const value = parseInt(this.value);
     sliderValue.textContent = value + '%';
 
-    // Create floating hearts
-    if (Math.random() > 0.7) {
-        createHeart(value);
-    }
+    // Update hearts display
+    const heartCount = Math.floor(value / 10);
+    heartsDisplay.textContent = '💕'.repeat(heartCount);
 
     if (!sliderLocked && value < 70) {
-        // Shake animation
+        // Shake and bounce back
         loveSlider.classList.add('shake');
         setTimeout(() => {
             loveSlider.classList.remove('shake');
             loveSlider.value = 0;
             sliderValue.textContent = '0%';
+            heartsDisplay.textContent = '';
         }, 300);
     } else if (value >= 70 && !sliderLocked) {
         sliderLocked = true;
         loveSlider.disabled = true;
         sliderMessage.textContent = "That's more than enough 😏";
         
-        // Heart burst animation
-        for (let i = 0; i < 20; i++) {
-            setTimeout(() => createHeart(Math.random() * 100), i * 100);
-        }
-
+        // Hearts explosion
+        heartsDisplay.textContent = '💖💕💗💓💝💘💞💟❤️❣️';
+        
         setTimeout(() => {
-            sliderSection.style.display = 'none';
+            sliderSection.classList.add('hidden');
             scrollSection.classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }, 3000);
+            setTimeout(() => {
+                document.querySelector('#scroll-section .letter-window').classList.add('open');
+            }, 50);
+        }, 2500);
     }
 });
 
-function createHeart(position) {
-    const heart = document.createElement('div');
-    heart.textContent = '💕';
-    heart.className = 'floating-heart';
-    heart.style.left = position + '%';
-    heart.style.top = '50%';
-    heartsContainer.appendChild(heart);
-
-    setTimeout(() => {
-        heart.remove();
-    }, 2000);
-}
-
 // ===== SECTION 3: SCROLL TO AGREE =====
-const scrollMessages = document.querySelectorAll('.scroll-item');
+const scrollContent = document.getElementById('scroll-content');
+const scrollMessages = document.querySelectorAll('.scroll-msg');
+const scrollFinal = document.querySelector('.scroll-msg-final');
 const agreeBtn = document.getElementById('agree-btn');
 
 function handleScroll() {
-    const scrollContainer = document.querySelector('.scroll-container');
-    const scrollPosition = scrollContainer.scrollTop;
-    const scrollHeight = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-    const scrollPercent = (scrollPosition / scrollHeight) * 100;
+    const scrollTop = scrollContent.scrollTop;
+    const scrollHeight = scrollContent.scrollHeight - scrollContent.clientHeight;
+    const scrollPercent = (scrollTop / scrollHeight) * 100;
 
-    scrollMessages.forEach((item, index) => {
-        const threshold = (index / (scrollMessages.length - 1)) * 80;
+    scrollMessages.forEach((msg, index) => {
+        const threshold = (index / (scrollMessages.length - 1)) * 70;
         if (scrollPercent >= threshold) {
-            item.classList.add('visible');
+            msg.classList.add('visible');
         }
     });
 
-    if (scrollPercent > 85) {
-        agreeBtn.classList.add('show');
+    if (scrollPercent > 80) {
+        scrollFinal.classList.add('show');
     }
 }
 
-document.querySelector('.scroll-container').addEventListener('scroll', handleScroll);
+scrollContent.addEventListener('scroll', handleScroll);
 
 agreeBtn.addEventListener('click', () => {
-    scrollSection.style.display = 'none';
+    scrollSection.classList.add('hidden');
     choiceSection.classList.remove('hidden');
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+        document.querySelector('#choice-section .letter-window').classList.add('open');
+    }, 50);
 });
 
-// ===== SECTION 4: CHOICE CARDS =====
-const dateCards = document.querySelectorAll('.date-card');
+// ===== SECTION 4: CHOICE CARDS (LDR) =====
+const dateChoices = document.querySelectorAll('.date-choice');
 
-dateCards.forEach(card => {
-    card.addEventListener('click', function() {
-        const choice = this.dataset.choice;
-        
-        // Smooth transition
-        this.style.transform = 'scale(1.2)';
+dateChoices.forEach(choice => {
+    choice.addEventListener('click', function() {
+        this.style.transform = 'scale(1.15)';
         this.style.transition = 'transform 0.3s ease';
-
+        
         setTimeout(() => {
-            choiceSection.style.display = 'none';
+            choiceSection.classList.add('hidden');
             messageSection.classList.remove('hidden');
-            window.scrollTo(0, 0);
+            setTimeout(() => {
+                document.querySelector('#message-section .letter-window').classList.add('open');
+            }, 50);
         }, 500);
     });
 });
 
-// ===== FINAL: MESSAGE INPUT & EMAIL =====
+// ===== FINAL: MESSAGE & EMAIL =====
 const messageInput = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const sendStatus = document.getElementById('send-status');
@@ -258,20 +289,19 @@ sendBtn.addEventListener('click', async function() {
     sendBtn.textContent = 'Sending... 💌';
 
     try {
-        // Using EmailJS (free email service)
         const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                service_id: 'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-                template_id: 'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
-                user_id: 'YOUR_PUBLIC_KEY', // Replace with your EmailJS public key
+                service_id: 'YOUR_SERVICE_ID',
+                template_id: 'YOUR_TEMPLATE_ID',
+                user_id: 'YOUR_PUBLIC_KEY',
                 template_params: {
                     from_name: 'Datto',
                     message: message,
-                    to_email: 'YOUR_EMAIL@example.com' // Replace with your email
+                    to_email: 'YOUR_EMAIL@example.com'
                 }
             })
         });
@@ -281,16 +311,15 @@ sendBtn.addEventListener('click', async function() {
             sendStatus.style.color = '#00b894';
             messageInput.value = '';
             
-            // Show final animation
             setTimeout(() => {
                 document.body.innerHTML = `
-                    <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); padding: 20px; text-align: center;">
-                        <h1 style="font-size: 48px; color: white; margin-bottom: 30px; font-family: 'Pixelify Sans', sans-serif;">
+                    <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); padding: 20px; text-align: center;">
+                        <h1 style="font-size: 48px; color: white; margin-bottom: 30px; font-family: 'Pixelify Sans', sans-serif; text-shadow: 3px 3px 6px rgba(0,0,0,0.2);">
                             You're the best, Datto! 💕
                         </h1>
-                        <img src="https://media.giphy.com/media/UuB5lh1bL1Dl6svihe/giphy.gif" style="width: 300px; border-radius: 20px; margin-bottom: 20px;">
-                        <p style="font-size: 24px; color: white; font-family: 'Pixelify Sans', sans-serif;">
-                            Can't wait for our Valentine's date! 🌹
+                        <img src="https://media.giphy.com/media/UuB5lh1bL1Dl6svihe/giphy.gif" style="width: 300px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
+                        <p style="font-size: 24px; color: white; font-family: 'Pixelify Sans', sans-serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                            Can't wait for our virtual date! 💖
                         </p>
                     </div>
                 `;
@@ -302,16 +331,6 @@ sendBtn.addEventListener('click', async function() {
         sendStatus.textContent = '❌ Oops! Something went wrong. Try again?';
         sendStatus.style.color = '#d63031';
         sendBtn.disabled = false;
-        sendBtn.textContent = 'Send to My Heart 💖';
+        sendBtn.textContent = 'Send 💖';
     }
 });
-
-// ===== SAD OVERLAY (if needed) =====
-function showSadOverlay() {
-    sadOverlay.classList.remove('hidden');
-    setTimeout(() => {
-        sadOverlay.classList.add('hidden');
-    }, 2000);
-}
-
-// You can call showSadOverlay() anywhere you want to show the sad animation
